@@ -1,0 +1,219 @@
+/* ============================================================
+   GLOBAL DESIGN SYSTEM — index.css
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --clr-bg:          #0a0a0f;
+  --clr-bg-2:        #111118;
+  --clr-bg-card:     #16161f;
+  --clr-bg-card-hover: #1c1c28;
+  --clr-border:      rgba(255,255,255,0.07);
+  --clr-border-glow: rgba(99,102,241,0.4);
+
+  --clr-primary:     #6366f1;
+  --clr-primary-light: #818cf8;
+  --clr-secondary:   #06b6d4;
+  --clr-accent:      #f472b6;
+
+  --clr-text:        #e2e8f0;
+  --clr-text-muted:  #94a3b8;
+  --clr-text-faint:  #475569;
+
+  /* Gradients */
+  --grad-primary:    linear-gradient(135deg, #6366f1, #06b6d4);
+  --grad-hero:       radial-gradient(ellipse at 60% 50%, rgba(99,102,241,0.18) 0%, transparent 70%),
+                     radial-gradient(ellipse at 10% 80%, rgba(6,182,212,0.1) 0%, transparent 60%);
+
+  /* Spacing */
+  --section-pad: clamp(5rem, 10vw, 9rem) 0;
+  --container-w: 1100px;
+
+  /* Typography */
+  --font-sans:   'Inter', sans-serif;
+  --font-mono:   'Fira Code', monospace;
+
+  /* Transitions */
+  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:    180ms;
+  --dur-med:     320ms;
+  --dur-slow:    560ms;
+
+  /* Shadows */
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 30px rgba(99,102,241,0.25);
+}
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--clr-bg);
+  color: var(--clr-text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a   { color: inherit; text-decoration: none; }
+ul  { list-style: none; }
+button { cursor: pointer; font-family: inherit; }
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; }
+::-webkit-scrollbar-track  { background: var(--clr-bg); }
+::-webkit-scrollbar-thumb  { background: var(--clr-primary); border-radius: 999px; }
+
+/* ── Layout ─────────────────────────────────────────────────── */
+.container {
+  max-width: var(--container-w);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+section { padding: var(--section-pad); }
+
+/* ── Section Heading ─────────────────────────────────────────── */
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--clr-primary-light);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: var(--clr-text);
+  line-height: 1.2;
+}
+
+.section-title span {
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-divider {
+  width: 56px;
+  height: 4px;
+  background: var(--grad-primary);
+  border-radius: 999px;
+  margin: 1rem 0 2.5rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  transition: all var(--dur-med) var(--ease);
+}
+
+.btn-primary {
+  background: var(--grad-primary);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(99,102,241,0.5);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--clr-text);
+  border: 1.5px solid var(--clr-border);
+  backdrop-filter: blur(8px);
+}
+.btn-outline:hover {
+  border-color: var(--clr-primary);
+  color: var(--clr-primary-light);
+  transform: translateY(-2px);
+}
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all var(--dur-med) var(--ease);
+  box-shadow: var(--shadow-card);
+}
+.card:hover {
+  background: var(--clr-bg-card-hover);
+  border-color: var(--clr-border-glow);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+/* ── Pill / Tag ───────────────────────────────────────────────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--clr-primary-light);
+  font-weight: 500;
+}
+
+/* ── Fade-in animation ────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.3); }
+  50%       { box-shadow: 0 0 40px rgba(99,102,241,0.6); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0);   }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%;   }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%;   }
+}
+
+.fade-in     { animation: fadeIn    0.6s var(--ease) both;        }
+.fade-in-up  { animation: fadeInUp  0.7s var(--ease) both;        }
+.delay-1     { animation-delay: 0.1s; }
+.delay-2     { animation-delay: 0.2s; }
+.delay-3     { animation-delay: 0.3s; }
+.delay-4     { animation-delay: 0.4s; }
+.delay-5     { animation-delay: 0.5s; }
+
+/* ── Responsive helpers ─────────────────────────────────────── */
+.sr-only {
+  position: absolute; width:1px; height:1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;
+}
