@@ -1,143 +1,208 @@
-/* About.css */
+/* ============================================================
+   About.css
+   ============================================================ */
 
-#about { background: var(--clr-bg-2); }
+#about {
+  background: var(--clr-bg-alt);
+}
 
-.about__grid {
+/* ── Main two-column layout ───────────────────────────────── */
+.about__layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
+  grid-template-columns: 1fr 380px;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: start;
+}
+
+/* ── Left column ─────────────────────────────────────────── */
+
+/* Career objective */
+.about__objective-heading {
+  display: flex;
   align-items: center;
-}
-
-/* Text side */
-.about__text p {
-  color: var(--clr-text-muted);
-  margin-bottom: 1.1rem;
-  font-size: 1.025rem;
-  line-height: 1.8;
-}
-
-.about__text p strong {
-  color: var(--clr-text);
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
   font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clr-primary-light);
+  margin-bottom: 0.85rem;
 }
 
-/* Stats grid */
+.about__objective-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.about__objective-text {
+  font-size: 1.025rem;
+  color: var(--clr-text-muted);
+  line-height: 1.85;
+  margin-bottom: 1rem;
+}
+
+.about__objective-text + .about__objective-text {
+  margin-bottom: 0;
+}
+
+/* Divider between objective and stats */
+.about__inner-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--clr-border);
+  margin: 2rem 0;
+}
+
+/* Quick stats row */
 .about__stats {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin-top: 2.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
 .about__stat {
   background: var(--clr-bg-card);
   border: 1px solid var(--clr-border);
   border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  transition: all var(--dur-med) var(--ease);
+  padding: 1.1rem 1rem;
+  text-align: center;
+  transition: border-color var(--dur-med) var(--ease),
+              transform var(--dur-med) var(--ease);
 }
 
 .about__stat:hover {
   border-color: var(--clr-border-glow);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 .about__stat-value {
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 800;
+  line-height: 1;
   background: var(--grad-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  line-height: 1;
 }
 
 .about__stat-label {
-  font-size: 0.8rem;
-  color: var(--clr-text-muted);
-  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--clr-text-faint);
+  margin-top: 0.3rem;
   font-weight: 500;
+  line-height: 1.3;
 }
 
-/* Visual side — avatar card */
-.about__visual {
+/* ── Right column — info cards ──────────────────────────── */
+.about__right {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
-.about__avatar-wrap {
-  position: relative;
-  width: 280px;
-}
-
-.about__avatar-border {
-  position: absolute;
-  inset: -4px;
-  border-radius: 28px;
-  background: var(--grad-primary);
-  z-index: 0;
-  animation: pulseGlow 3s ease infinite;
-}
-
-.about__avatar-bg {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 24px;
-  background: var(--clr-bg-card);
-  border: 3px solid var(--clr-bg-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.about__avatar-emoji {
-  font-size: 7rem;
-  user-select: none;
-  animation: float 5s ease-in-out infinite;
-}
-
-.about__info-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.85rem;
-  color: var(--clr-text-muted);
+/* Education card */
+.about__edu-card {
   background: var(--clr-bg-card);
   border: 1px solid var(--clr-border);
-  border-radius: 999px;
-  padding: 0.4rem 1rem;
+  border-radius: 14px;
+  padding: 1.5rem 1.6rem;
+  transition: border-color var(--dur-med) var(--ease);
+}
+
+.about__edu-card:hover {
+  border-color: var(--clr-border-glow);
+}
+
+.about__edu-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
   font-family: var(--font-mono);
-  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clr-primary-light);
+  margin-bottom: 0.9rem;
 }
 
-.about__info-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px #22c55e;
-  animation: pulseGlow 2s ease infinite;
+.about__edu-degree {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--clr-text);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.about__edu-row {
+  font-size: 0.875rem;
+  color: var(--clr-text-muted);
+  line-height: 1.6;
+}
+
+.about__edu-row + .about__edu-row {
+  margin-top: 0.2rem;
+}
+
+.about__edu-year {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--clr-primary-light);
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+}
+
+/* Meta info card */
+.about__meta-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: 14px;
+  padding: 1.2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.about__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+  color: var(--clr-text-muted);
+}
+
+.about__meta-item svg {
   flex-shrink: 0;
+  color: var(--clr-primary-light);
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .about__grid {
+.about__meta-item a {
+  color: var(--clr-text-muted);
+  transition: color var(--dur-fast);
+}
+.about__meta-item a:hover { color: var(--clr-primary-light); }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .about__layout {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
   }
-  .about__visual {
-    order: -1;
+
+  .about__stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 480px) {
-  .about__stats { grid-template-columns: 1fr 1fr; }
-  .about__avatar-wrap { width: 220px; }
+  .about__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

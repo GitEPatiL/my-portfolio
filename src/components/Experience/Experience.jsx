@@ -1,22 +1,22 @@
-import { useRef } from 'react';
 import { experience } from '../../data/portfolioData';
-import useScrollReveal from '../../hooks/useScrollReveal';
+import { motion } from 'framer-motion';
+import { fadeIn } from '../../animations';
 import './Experience.css';
 
 export default function Experience() {
-  const ref     = useRef(null);
-  const visible = useScrollReveal(ref, 0.1);
-
   return (
-    <section id="experience" ref={ref}>
+    <section id="experience">
       <div className="container">
-        <p className="section-tag">// where I've been</p>
+        <p className="section-tag">where I&apos;ve been</p>
         <h2 className="section-title">Work <span>Experience</span></h2>
         <div className="section-divider" aria-hidden="true" />
 
-        <div
-          className={`experience__timeline ${visible ? 'fade-in-up' : ''}`}
-          style={{ opacity: visible ? 1 : 0 }}
+        <motion.div
+          className="experience__timeline"
+          variants={fadeIn}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
         >
           {experience.map(exp => (
             <article key={exp.id} className="exp-item">
@@ -34,7 +34,7 @@ export default function Experience() {
               </div>
             </article>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

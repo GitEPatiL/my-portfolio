@@ -37,13 +37,12 @@
   position: absolute;
   left: -2.85rem;
   top: 5px;
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   background: var(--grad-primary);
-  border: 2px solid var(--clr-bg);
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
-  animation: pulseGlow 2.5s ease infinite;
+  border: 2.5px solid var(--clr-bg);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.18);
 }
 
 /* Card */
@@ -56,9 +55,9 @@
 }
 
 .exp-item__card:hover {
-  border-color: var(--clr-border-glow);
+  border-color: var(--clr-border-active);
   background: var(--clr-bg-card-hover);
-  transform: translateX(6px);
+  transform: translateX(5px);
   box-shadow: var(--shadow-glow);
 }
 

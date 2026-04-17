@@ -1,97 +1,126 @@
-/* Skills.css */
+/* ============================================================
+   Skills.css — badge-pill layout, no progress bars
+   ============================================================ */
 
-#skills { background: var(--clr-bg); }
+#skills {
+  background: var(--clr-bg);
+}
 
+/* ── Category grid ───────────────────────────────────────── */
 .skills__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  margin-top: 1rem;
 }
 
-.skill-card {
+/* ── Category card ───────────────────────────────────────── */
+.skill-cat {
   background: var(--clr-bg-card);
   border: 1px solid var(--clr-border);
   border-radius: 16px;
-  padding: 2rem;
-  transition: all var(--dur-med) var(--ease);
+  padding: 1.75rem 1.75rem 1.5rem;
+  transition: border-color var(--dur-med) var(--ease),
+              box-shadow var(--dur-med) var(--ease),
+              transform var(--dur-med) var(--ease);
 }
 
-.skill-card:hover {
+.skill-cat:hover {
   border-color: var(--clr-border-glow);
-  background: var(--clr-bg-card-hover);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 6px 28px rgba(99, 102, 241, 0.12);
+  transform: translateY(-3px);
 }
 
-.skill-card__header {
+/* Card header */
+.skill-cat__header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.75rem;
+  gap: 0.65rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--clr-border);
 }
 
-.skill-card__icon {
-  font-size: 1.6rem;
+.skill-cat__icon {
+  font-size: 1.5rem;
   line-height: 1;
+  flex-shrink: 0;
 }
 
-.skill-card__title {
-  font-size: 1rem;
+.skill-cat__name {
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--clr-text);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
 }
 
-/* Skill bars */
-.skill-item {
-  margin-bottom: 1.25rem;
-}
-.skill-item:last-child { margin-bottom: 0; }
-
-.skill-item__top {
+/* Badge pills container */
+.skill-cat__badges {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+/* Individual badge */
+.skill-badge {
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 0.45rem;
-}
-
-.skill-item__name {
-  font-size: 0.875rem;
-  color: var(--clr-text-muted);
+  gap: 0.3rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
   font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--clr-text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all var(--dur-fast) var(--ease);
+  cursor: default;
+  white-space: nowrap;
 }
 
-.skill-item__pct {
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
+.skill-badge:hover {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.35);
   color: var(--clr-primary-light);
 }
 
-.skill-item__track {
-  height: 6px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 999px;
-  overflow: hidden;
+/* ── Bottom "all skills" banner ──────────────────────────── */
+.skills__all {
+  margin-top: 2.5rem;
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
 }
 
-.skill-item__fill {
-  height: 100%;
-  border-radius: 999px;
-  background: var(--grad-primary);
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform 1s var(--ease);
+.skills__all-label {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clr-text-faint);
+  margin-bottom: 1rem;
 }
 
-.skills__grid.animate .skill-item__fill {
-  transform: scaleX(1);
+.skills__all-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
 }
 
-/* Responsive */
+/* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .skills__grid { grid-template-columns: 1fr 1fr; }
+  .skills__grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
-@media (max-width: 600px) {
-  .skills__grid { grid-template-columns: 1fr; }
+
+@media (max-width: 560px) {
+  .skills__grid {
+    grid-template-columns: 1fr;
+  }
+  .skills__all {
+    padding: 1.25rem 1.25rem;
+  }
 }
