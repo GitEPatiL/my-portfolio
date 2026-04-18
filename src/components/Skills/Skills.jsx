@@ -12,7 +12,7 @@ export default function Skills() {
       <div className="container">
 
         {/* Section heading */}
-        <p className="section-tag">{`// what I work with`}</p>
+        <p className="section-tag">{` what I work with`}</p>
         <h2 className="section-title">My <span>Skills</span></h2>
         <div className="section-divider" aria-hidden="true" />
 

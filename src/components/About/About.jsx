@@ -45,7 +45,7 @@ export default function About() {
     <section id="about">
       <div className="container">
         {/* Section heading — always visible */}
-        <p className="section-tag">{`// who I am`}</p>
+        <p className="section-tag">{` who I am`}</p>
         <h2 className="section-title">About <span>Me</span></h2>
         <div className="section-divider" aria-hidden="true" />
 

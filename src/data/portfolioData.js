@@ -13,7 +13,7 @@ export const siteConfig = {
   location: "Pune, India",
   email:    "giteaviraj155@gmail.com",
   phone:    "7038071626",
-  resumeUrl: "#", // Replace with your actual resume / Google Drive link
+  resumeUrl: "https://drive.google.com/file/d/1vaT8geEv2iHELza-2y_IwJnn97tYdHem/view?usp=drive_link", // Replace with your actual resume / Google Drive link
 };
 
 // ── Navigation links ─────────────────────────────────────────
@@ -38,7 +38,7 @@ export const about = {
   stats: [
     { label: "Projects Completed",  value: "10+"  },
     { label: "Technologies",        value: "11+"  },
-    { label: "Graduating Year",     value: "2025" },
+    { label: "Graduation Year",     value: "2025" },
     { label: "Cups of Coffee",      value: "∞"    },
   ],
 };
@@ -98,7 +98,7 @@ export const projects = [
     description:
       "A full-stack e-commerce web application for an organic spice brand. Features include product listings, user authentication, OAuth2-based email delivery, and a production-ready MySQL database schema following the MVC architecture.",
     tags: ["Node.js", "Express.js", "MySQL", "HTML", "CSS"],
-    github: "https://github.com/GitEPatiL",
+    github: "https://github.com/GitEPatiL/Masale-Selling-Website",
     live:   "#", // Add live URL when deployed
     featured: true,
   },
@@ -108,7 +108,7 @@ export const projects = [
     description:
       "A curated collection of five vanilla JavaScript mini-projects demonstrating core DOM manipulation skills: Animated Cursor, List & Search, Simple Calculator, Todo List, and Color Switcher.",
     tags: ["HTML", "CSS", "JavaScript", "DOM"],
-    github: "https://github.com/GitEPatiL",
+    github: "https://github.com/GitEPatiL/dom-mini-projects",
     live:   "#",
     featured: true,
   },
@@ -138,9 +138,9 @@ export const projects = [
 export const experience = [
   {
     id: 1,
-    role:    "Full Stack Developer (Freelance)",
+    role:    "Full Stack Developer Intern",
     company: "Self-Employed",
-    period:  "2024 – Present",
+    period:  "04/2025 – 09/2025",
     description:
       "Designing and developing complete web applications for clients from the ground up — covering UI design, RESTful APIs, database schemas, and deployment.",
     highlights: [
