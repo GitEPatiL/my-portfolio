@@ -139,7 +139,7 @@ export const experience = [
   {
     id: 1,
     role:    "Full Stack Developer Intern",
-    company: "Self-Employed",
+    company: "A2Z IT HUB",
     period:  "04/2025 – 09/2025",
     description:
       "Designing and developing complete web applications for clients from the ground up — covering UI design, RESTful APIs, database schemas, and deployment.",
