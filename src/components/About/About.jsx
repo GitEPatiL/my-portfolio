@@ -1,147 +1,221 @@
+// src/components/About/About.jsx
+// Stitch Cyber-Minimalist About section with scroll-triggered fade-up animations
+
+import { useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
 import { about, siteConfig, education, contact } from '../../data/portfolioData';
-import { motion } from 'framer-motion';
-import { fadeIn } from '../../animations';
-import './About.css';
-
-/* ── Inline SVG icons ──────────────────────────────────────── */
-const LocationIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-    <circle cx="12" cy="10" r="3"/>
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-  </svg>
-);
-
-const PhoneIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07
-      8.63a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361
-      1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0
-      012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-  </svg>
-);
-
-const GraduationIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-  </svg>
-);
+import { fadeUp, staggerContainer, scaleIn, VIEWPORT, smoothSpring } from '../../animations';
+import { LocationIcon, MailIcon, PhoneIcon, GraduationIcon, GithubIcon, LinkedinIcon } from '../ui/Icons';
 
 export default function About() {
-  const edu = education[0]; // single education entry
+  const edu = education[0];
+  const sectionRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const rawY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  const rawOpacity = useTransform(scrollYProgress, [0, 0.5], [0.95, 1]);
+  const rawScale = useTransform(scrollYProgress, [0, 0.5], [0.98, 1]);
+
+  const y = useSpring(rawY, smoothSpring);
+  const opacity = useSpring(rawOpacity, smoothSpring);
+  const scale = useSpring(rawScale, smoothSpring);
 
   return (
-    <section id="about">
+    <motion.section 
+      id="about" 
+      ref={sectionRef}
+      style={{ 
+        background: 'var(--bg)',
+        y: prefersReducedMotion ? 0 : y,
+        opacity: prefersReducedMotion ? 1 : opacity,
+        scale: prefersReducedMotion ? 1 : scale
+      }}
+    >
       <div className="container">
-        {/* Section heading — always visible */}
-        <p className="section-tag">{` who I am`}</p>
-        <h2 className="section-title">About <span>Me</span></h2>
-        <div className="section-divider" aria-hidden="true" />
 
-        {/* Animated body */}
+        {/* Section heading */}
         <motion.div
-          className="about__layout"
-          variants={fadeIn}
+          variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
+          viewport={VIEWPORT}
         >
 
-          {/* ── Left: objective + stats ─────────────────── */}
-          <div>
-            {/* Career Objective */}
-            <p className="about__objective-heading">
-              <span className="about__objective-icon" aria-hidden="true">🎯</span>
-              Career Objective
-            </p>
-            <p className="about__objective-text">{about.intro}</p>
-            <p className="about__objective-text">{about.details}</p>
+          <motion.h2 className="section-title" variants={fadeUp}>
+            About <span className="grad-text">Me</span>
+          </motion.h2>
+          <motion.div className="section-neon-line" variants={fadeUp} />
+        </motion.div>
 
-            <div className="about__inner-divider" aria-hidden="true" />
+        {/* Body grid */}
+        <motion.div
+          variants={staggerContainer(0.15)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem',
+          }}
+        >
 
-            {/* Quick stats */}
-            <div className="about__stats" aria-label="Quick stats">
+          {/* ── Left: Objective + Stats ─────────────────── */}
+          <motion.div variants={fadeUp} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+            {/* Objective block */}
+            <motion.div 
+              className="glass-card" 
+              style={{ padding: '2rem' }}
+              whileHover={prefersReducedMotion ? {} : { y: -6, scale: 1.02, boxShadow: '0 0 20px rgba(138,43,226,0.15)' }}
+              transition={smoothSpring}
+            >
+              <p style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                fontFamily: 'var(--font-code)', fontSize: '0.75rem',
+                letterSpacing: '0.08em', color: 'var(--purple-light)',
+                marginBottom: '1rem', textTransform: 'uppercase',
+              }}>
+                <span>🎯</span> Career Objective
+              </p>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, fontSize: '0.95rem', marginBottom: '1rem' }}>
+                {about.intro}
+              </p>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                {about.details}
+              </p>
+            </motion.div>
+
+            {/* Stats grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '1rem',
+            }}>
               {about.stats.map((s, i) => (
-                <div key={i} className="about__stat">
-                  <div className="about__stat-value">{s.value}</div>
-                  <div className="about__stat-label">{s.label}</div>
-                </div>
+                <motion.div
+                  key={i}
+                  variants={scaleIn}
+                  className="glass-card"
+                  style={{
+                    padding: '1.25rem',
+                    textAlign: 'center',
+                    cursor: 'default',
+                  }}
+                  whileHover={prefersReducedMotion ? {} : { y: -6, scale: 1.03, borderColor: 'rgba(138,43,226,0.5)', boxShadow: '0 0 20px rgba(138,43,226,0.15)' }}
+                  transition={smoothSpring}
+                >
+                  <div style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '1.8rem',
+                    fontWeight: 800,
+                    lineHeight: 1.1,
+                    marginBottom: '0.4rem',
+                    background: 'var(--grad-text)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}>
+                    {s.value}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-code)',
+                    fontSize: '0.68rem',
+                    letterSpacing: '0.08em',
+                    color: 'var(--text-faint)',
+                    textTransform: 'uppercase',
+                  }}>
+                    {s.label}
+                  </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          {/* ── Right: education + contact info ─────────── */}
-          <div className="about__right">
+          {/* ── Right: Education + Contact ─────────────── */}
+          <motion.div variants={fadeUp} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
             {/* Education card */}
-            <div className="about__edu-card">
-              <p className="about__edu-eyebrow">
-                <GraduationIcon />
-                Education
+            <motion.div 
+              className="glass-card" 
+              style={{ padding: '2rem' }}
+              whileHover={prefersReducedMotion ? {} : { y: -6, scale: 1.02, boxShadow: '0 0 20px rgba(138,43,226,0.15)' }}
+              transition={smoothSpring}
+            >
+              <p style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                fontFamily: 'var(--font-code)', fontSize: '0.72rem',
+                letterSpacing: '0.08em', color: 'var(--purple-light)',
+                marginBottom: '1.25rem', textTransform: 'uppercase',
+              }}>
+                <GraduationIcon size={14} /> Education
               </p>
-              <p className="about__edu-degree">{edu.degree}</p>
-              <p className="about__edu-row">{edu.institution}</p>
-              <p className="about__edu-row">{edu.university}</p>
-              <span className="about__edu-year">
-                🎓 Graduating {edu.year}
-              </span>
-            </div>
+              <p style={{
+                fontFamily: 'var(--font-body)', fontWeight: 700,
+                fontSize: '1rem', color: 'var(--text)', marginBottom: '0.5rem',
+              }}>
+                {edu.degree}
+              </p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '0.25rem' }}>
+                {edu.institution}
+              </p>
+              <p style={{ color: 'var(--text-faint)', fontSize: '0.82rem', marginBottom: '1rem' }}>
+                {edu.university}
+              </p>
+              <span className="chip">🎓 Graduated in {edu.year}</span>
+            </motion.div>
 
-            {/* Contact / meta info card */}
-            <div className="about__meta-card">
-              <div className="about__meta-item">
-                <LocationIcon />
-                {siteConfig.location}
-              </div>
-              <div className="about__meta-item">
-                <MailIcon />
-                <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-              </div>
-              <div className="about__meta-item">
-                <PhoneIcon />
-                <a href={`tel:${siteConfig.phone}`}>{siteConfig.phone}</a>
-              </div>
+            {/* Contact info card */}
+            <motion.div 
+              className="glass-card" 
+              style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '0.9rem' }}
+              whileHover={prefersReducedMotion ? {} : { y: -6, scale: 1.02, boxShadow: '0 0 20px rgba(138,43,226,0.15)' }}
+              transition={smoothSpring}
+            >
+              <p style={{
+                fontFamily: 'var(--font-code)', fontSize: '0.72rem',
+                letterSpacing: '0.08em', color: 'var(--purple-light)',
+                textTransform: 'uppercase', marginBottom: '0.25rem',
+              }}>Quick Info</p>
+
+              {[
+                { icon: <LocationIcon size={14} />, value: siteConfig.location, href: null },
+                { icon: <MailIcon size={14} />, value: siteConfig.email, href: `mailto:${siteConfig.email}` },
+                { icon: <PhoneIcon size={14} />, value: siteConfig.phone, href: `tel:${siteConfig.phone}` },
+              ].map(({ icon, value, href }) => (
+                <div key={value} style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <span style={{ color: 'var(--purple)', flexShrink: 0 }}>{icon}</span>
+                  {href ? (
+                    <a href={href} style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}
+                      className="hover:text-purple-light transition-colors">{value}</a>
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{value}</span>
+                  )}
+                </div>
+              ))}
+
               {contact.socials.map(s => (
-                <div key={s.icon} className="about__meta-item">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    {s.icon === 'github' && (
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0
-                        00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020
-                        4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38
-                        0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005
-                        4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44
-                        7A3.37 3.37 0 009 18.13V22"/>
-                    )}
-                    {s.icon === 'linkedin' && (
-                      <>
-                        <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
-                        <rect x="2" y="9" width="4" height="12"/>
-                        <circle cx="4" cy="4" r="2"/>
-                      </>
-                    )}
-                  </svg>
-                  <a href={s.href} target="_blank" rel="noopener noreferrer">
+                <div key={s.icon} style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <span style={{ color: 'var(--purple)', flexShrink: 0 }}>
+                    {s.icon === 'github' && <GithubIcon size={14} />}
+                    {s.icon === 'linkedin' && <LinkedinIcon size={14} />}
+                  </span>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer"
+                    style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
                     {s.label}
                   </a>
                 </div>
               ))}
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

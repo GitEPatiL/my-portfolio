@@ -112,16 +112,7 @@ export const projects = [
     live:   "#",
     featured: true,
   },
-  {
-    id: 3,
-    title: "React Character Cards",
-    description:
-      "A React application that renders dynamic character cards, showcasing core concepts such as props, state management, custom hooks, reusable components, and REST API integration.",
-    tags: ["React", "JavaScript", "Hooks", "REST API", "CSS"],
-    github: "https://github.com/GitEPatiL",
-    live:   "#",
-    featured: false,
-  },
+
   {
     id: 4,
     title: "Portfolio Website",

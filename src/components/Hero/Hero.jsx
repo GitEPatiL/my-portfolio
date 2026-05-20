@@ -1,209 +1,425 @@
+// src/components/Hero/Hero.jsx
+import { useRef, useEffect, useState } from 'react';
+import { motion, useMotionValue, useSpring, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { siteConfig, contact } from '../../data/portfolioData';
-import { motion } from 'framer-motion';
-import { slideLeft, staggerContainer, fadeIn } from '../../animations';
-import './Hero.css';
+import MagneticButton from '../ui/MagneticButton';
+import { GithubIcon, LinkedinIcon, LocationIcon, MailIcon } from '../ui/Icons';
+import { smoothSpring, floating } from '../../animations';
 
-/* ── Inline SVG icons (zero external deps) ──────────────────── */
-const GitHubIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-    strokeLinejoin="round" aria-hidden="true">
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0
-      00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020
-      4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38
-      0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44
-      5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0
-      009 18.13V22"/>
-  </svg>
-);
-
-const LinkedInIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-    strokeLinejoin="round" aria-hidden="true">
-    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
-    <rect x="2" y="9" width="4" height="12"/>
-    <circle cx="4" cy="4" r="2"/>
-  </svg>
-);
-
-const LocationIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-    strokeLinejoin="round" aria-hidden="true">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-    <circle cx="12" cy="10" r="3"/>
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-    strokeLinejoin="round" aria-hidden="true">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-  </svg>
-);
-
-/* ── Smooth-scroll helper ────────────────────────────────────── */
+/* ── Smooth-scroll helper ─────────────────────────────────── */
 const scrollTo = (selector) => (e) => {
   e.preventDefault();
   document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' });
 };
 
-/* ── Component ───────────────────────────────────────────────── */
+/* ── Framer Motion variants ───────────────────────────────── */
+const STAGGER = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
+};
+const ITEM = {
+  hidden:  { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ...smoothSpring } },
+};
+
+/* ── Blinking typewriter cursor ───────────────────────────── */
+function Cursor() {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        display: 'inline-block',
+        width: 2,
+        height: '0.8em',
+        background: '#22d3ee',
+        marginLeft: '0.15em',
+        verticalAlign: 'text-bottom',
+        borderRadius: 1,
+        animation: 'blink 0.75s step-end infinite',
+      }}
+    />
+  );
+}
+
+/* ── Main Component ───────────────────────────────────────── */
 export default function Hero() {
+  const sectionRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  /* ── Scroll Parallax ────────────────────────────────────── */
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const rawY = useTransform(scrollYProgress, [0, 1], [0, isMobile ? -15 : -30]);
+  const rawOpacity = useTransform(scrollYProgress, [0, 0.5], [0.95, 1]);
+  const rawScale = useTransform(scrollYProgress, [0, 0.5], [0.98, 1]);
+
+  const y = useSpring(rawY, smoothSpring);
+  const opacity = useSpring(rawOpacity, smoothSpring);
+  const scale = useSpring(rawScale, smoothSpring);
+
+  /* Cursor spotlight */
+  const mouseX = useMotionValue(-9999);
+  const mouseY = useMotionValue(-9999);
+  const spotX  = useSpring(mouseX, smoothSpring);
+  const spotY  = useSpring(mouseY, smoothSpring);
+
+  const handleMouseMove = (e) => {
+    if (isMobile || prefersReducedMotion) return;
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+  const handleMouseLeave = () => {
+    mouseX.set(-9999);
+    mouseY.set(-9999);
+  };
+
   return (
     <>
-      <section id="hero">
-        {/* Background */}
-        <div className="hero__bg" aria-hidden="true">
-          <div className="hero__blob hero__blob--1" />
-          <div className="hero__blob hero__blob--2" />
-        </div>
-        <div className="hero__grid" aria-hidden="true" />
-
-        <div className="container">
-          <div className="hero__inner">
-
-            {/* ── Left: text ───────────────────────────── */}
-            <motion.div
-              className="hero__text"
-              variants={staggerContainer(0.1)}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
-            >
-
-              {/* Eyebrow badge */}
-              <motion.span className="hero__eyebrow" aria-hidden="true" variants={fadeIn}>
-                <span className="hero__eyebrow-dot" />
-                Available for work
-              </motion.span>
-
-              {/* Name */}
-              <motion.h1 className="hero__name" variants={fadeIn}>
-                Hi, I&apos;m{' '}
-                <span className="hero__name--highlight">
-                  {siteConfig.fullName}
-                </span>
-              </motion.h1>
-
-              {/* Role */}
-              <motion.p className="hero__role" variants={fadeIn}>
-                <span className="hero__role-icon" aria-hidden="true">💻</span>
-                {siteConfig.title}
-              </motion.p>
-
-              {/* Short intro paragraph */}
-              <motion.p className="hero__intro" variants={fadeIn}>
-                {siteConfig.tagline}
-              </motion.p>
-
-              {/* CTA buttons */}
-              <motion.div className="hero__cta" variants={fadeIn}>
-                <a
-                  href="#projects"
-                  className="btn btn-primary"
-                  onClick={scrollTo('#projects')}
-                  id="hero-view-projects"
-                >
-                  View Projects ↓
-                </a>
-                <a
-                  href="#contact"
-                  className="btn btn-outline"
-                  onClick={scrollTo('#contact')}
-                  id="hero-contact-me"
-                >
-                  Contact Me
-                </a>
-              </motion.div>
-
-              {/* Mini meta row: location + email */}
-              <motion.div className="hero__meta" aria-label="Quick contact info" variants={fadeIn}>
-                <span className="hero__meta-item">
-                  <LocationIcon />
-                  {siteConfig.location}
-                </span>
-                <a
-                  href={`mailto:${siteConfig.email}`}
-                  className="hero__meta-item"
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
-                  <MailIcon />
-                  {siteConfig.email}
-                </a>
-              </motion.div>
-            </motion.div>
-
-            {/* ── Right: avatar card ───────────────────── */}
-            <motion.div
-              className="hero__avatar-card"
-              aria-hidden="true"
-              variants={slideLeft}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
-            >
-              {/* Rotating gradient ring */}
-              <div className="hero__avatar-ring" />
-
-              {/* Inner card */}
-              <div className="hero__avatar-inner">
-                <span
-                  className="hero__avatar-emoji"
-                  role="img"
-                  aria-label="Developer coding"
-                >
-                  👨‍💻
-                </span>
-                <span className="hero__avatar-badge">MERN Stack</span>
-              </div>
-
-              {/* Floating skill chips */}
-              <span className="hero__chip hero__chip--react">⚛ React</span>
-              <span className="hero__chip hero__chip--node">🟢 Node.js</span>
-              <span className="hero__chip hero__chip--mongo">🍃 MongoDB</span>
-            </motion.div>
-
-          </div>
+      <motion.section
+        id="hero"
+        ref={sectionRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          position: 'relative',
+          minHeight: '60vh',
+          overflow: 'hidden', 
+          display: 'flex',
+          alignItems: 'center',
+          background: '#050608',
+          backgroundImage: "url('/hero-portrait.jpeg')",
+          backgroundSize: 'contain',
+          backgroundPosition: 'right top',
+          backgroundRepeat: 'no-repeat',
+          y: prefersReducedMotion ? 0 : y,
+          opacity: prefersReducedMotion ? 1 : opacity,
+          scale: prefersReducedMotion ? 1 : scale,
+        }}
+      >
+        {/* LAYER 1 — Gradient overlays */}
+        <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none' }}>
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: `linear-gradient(
+              to right,
+              #050608 30%,
+              rgba(5,6,8,0.92) 42%,
+              rgba(5,6,8,0.55) 55%,
+              rgba(5,6,8,0.12) 68%,
+              transparent 82%
+            )`,
+          }} />
+          <div style={{
+            position: 'absolute', top: 1, left: 0, right: 0, height: '25%',
+            background: 'linear-gradient(to bottom, rgba(5,6,8,0.55), transparent)',
+          }} />
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0, height: '28%',
+            background: 'linear-gradient(to top, #050608 20%, transparent)',
+          }} />
         </div>
 
-        {/* Scroll cue */}
-        <div className="hero__scroll" aria-hidden="true">
-          <span className="hero__scroll-label">scroll</span>
-          <span className="hero__scroll-line" />
-        </div>
-      </section>
+        {/* LAYER 2 — Grid texture */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute', inset: 0, zIndex: 4, pointerEvents: 'none',
+            backgroundImage: `
+              linear-gradient(rgba(138,43,226,0.05) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(138,43,226,0.05) 1px, transparent 1px)
+            `,
+            backgroundSize: '62px 62px',
+            maskImage: 'radial-gradient(ellipse at 20% 50%, black 25%, transparent 65%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at 20% 50%, black 25%, transparent 65%)',
+          }}
+        />
 
-      {/* Fixed side social icons */}
-      <aside className="hero__socials" aria-label="Social profiles">
-        {contact.socials.map(s => (
-          <a
-            key={s.icon}
-            href={s.href}
-            className="hero__social-link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={s.label}
+        {/* LAYER 3 — Ambient orbs (floating) */}
+        <motion.div
+          animate={prefersReducedMotion ? {} : floating.animate}
+          aria-hidden="true" style={{
+          position: 'absolute', zIndex: 4, pointerEvents: 'none',
+          top: '-10%', left: '-6%',
+          width: 560, height: 560, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(138,43,226,0.22) 0%, transparent 65%)',
+          filter: 'blur(2px)',
+        }} />
+        <motion.div
+          animate={prefersReducedMotion ? {} : floating.animate}
+          aria-hidden="true" style={{
+          position: 'absolute', zIndex: 4, pointerEvents: 'none',
+          bottom: '-8%', left: '5%',
+          width: 380, height: 380, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(0,191,255,0.11) 0%, transparent 65%)',
+          filter: 'blur(2px)',
+        }} />
+
+        {/* LAYER 4 — Cursor spotlight */}
+        {!isMobile && !prefersReducedMotion && (
+          <motion.div
+            aria-hidden="true"
+            style={{
+              position: 'absolute', zIndex: 5,
+              left: spotX, top: spotY,
+              width: 680, height: 680, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(138,43,226,0.10) 0%, rgba(0,191,255,0.04) 45%, transparent 70%)',
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+
+        {/* LAYER 5 — Text content */}
+        <div
+          className="container"
+          style={{
+            position: 'relative',
+            zIndex: 6,
+            display: 'flex',
+            alignItems: 'center',
+            minHeight: '100vh',
+            paddingTop: 'var(--nav-h)',
+            paddingBottom: '4rem',
+          }}
+        >
+          <motion.div
+            variants={STAGGER}
+            initial="hidden"
+            animate="visible"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              maxWidth: 620,
+            }}
           >
-            {s.icon === 'github'   ? <GitHubIcon />   : null}
-            {s.icon === 'linkedin' ? <LinkedInIcon /> : null}
-          </a>
+            <motion.p
+              variants={ITEM}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(0.82rem, 1.1vw, 1rem)',
+                fontWeight: 500,
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+                color: '#22d3ee',
+                marginBottom: '1rem',
+                marginTop:'-1rem'
+              }}
+            >
+              Hi, I&apos;m
+            </motion.p>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20, filter: 'blur(8px)', scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }}
+              transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.3 }}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2.8rem, 6.5vw, 5.5rem)',
+                fontWeight: 900,
+                lineHeight: 0.95,
+                letterSpacing: '-0.02em',
+                background: 'linear-gradient(90deg, #ffffff 0%, #cffafe 28%, #c4b5fd 60%, #ffffff 88%)',
+                backgroundSize: '200% auto',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 30px rgba(139,92,246,0.4))',
+                margin: 0,
+              }}
+            >
+              Aviraj Bhausaheb Gite
+            </motion.h1>
+
+            <motion.p
+              variants={ITEM}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(1.1rem, 2vw, 1.65rem)',
+                fontWeight: 600,
+                color: '#e5e7eb',
+                marginTop: '1.5rem',
+              }}
+            >
+              Full Stack MERN Developer<Cursor />
+            </motion.p>
+
+            <motion.p
+              variants={ITEM}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(1rem, 1.6vw, 1.35rem)',
+                fontWeight: 500,
+                color: '#22d3ee',
+                lineHeight: 1.55,
+                marginTop: '1.25rem',
+                maxWidth: 540,
+              }}
+            >
+              I build scalable, immersive, and visually stunning digital products.
+            </motion.p>
+
+            <motion.p
+              variants={ITEM}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(0.88rem, 1.25vw, 1rem)',
+                fontWeight: 400,
+                color: '#9ca3af',
+                lineHeight: 1.9,
+                marginTop: '1.1rem',
+                maxWidth: 500,
+              }}
+            >
+              Passionate about creating modern web applications with React, Node.js,
+              Express.js, MongoDB, and advanced frontend animations.
+            </motion.p>
+
+            <motion.div
+              variants={ITEM}
+              style={{
+                marginTop: '1.75rem',
+                width: 68, height: 2, borderRadius: 999,
+                background: 'linear-gradient(90deg, #8a2be2, #22d3ee)',
+              }}
+            />
+
+            <motion.div
+              variants={ITEM}
+              style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1.75rem' }}
+            >
+              <MagneticButton as="a" href="#projects" className="btn-primary"
+                onClick={scrollTo('#projects')} id="hero-view-projects">
+                View Projects ↓
+              </MagneticButton>
+              <MagneticButton as="a" href="#contact" className="btn-ghost"
+                onClick={scrollTo('#contact')} id="hero-contact-me">
+                Contact Me
+              </MagneticButton>
+            </motion.div>
+
+            <motion.div
+              variants={ITEM}
+              style={{
+                display: 'flex', gap: '1.5rem', flexWrap: 'wrap',
+                marginTop: '1.75rem', paddingTop: '1.1rem',
+                borderTop: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              <span style={{
+                display: 'flex', alignItems: 'center', gap: '0.4rem',
+                fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)',
+                fontFamily: 'var(--font-body)',
+              }}>
+                <LocationIcon size={12} /> {siteConfig.location}
+              </span>
+              <a href={`mailto:${siteConfig.email}`} style={{
+                display: 'flex', alignItems: 'center', gap: '0.4rem',
+                fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)',
+                fontFamily: 'var(--font-body)',
+              }}>
+                <MailIcon size={12} /> {siteConfig.email}
+              </a>
+            </motion.div>
+
+          </motion.div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.2, duration: 1 }}
+          aria-hidden="true"
+          style={{
+            position: 'absolute', bottom: '2rem',
+            left: '50%', transform: 'translateX(-50%)',
+            zIndex: 5,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', gap: '0.4rem',
+          }}
+        >
+          <span style={{
+            fontFamily: 'var(--font-code)',
+            fontSize: '0.58rem', letterSpacing: '0.18em',
+            color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase',
+          }}>
+            Scroll
+          </span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              width: 1, height: 44, borderRadius: 999,
+              background: 'linear-gradient(to bottom, #8a2be2, rgba(0,191,255,0.4), transparent)',
+            }}
+          />
+        </motion.div>
+
+      </motion.section>
+
+      <aside
+        aria-label="Social profiles"
+        className="hidden lg:flex"
+        style={{
+          position: 'fixed', left: '1.5rem', bottom: '3rem',
+          zIndex: 50, flexDirection: 'column', alignItems: 'center', gap: '0.85rem',
+        }}
+      >
+        {contact.socials.map(s => (
+          <motion.a
+            key={s.icon}
+            href={s.href} target="_blank" rel="noopener noreferrer"
+            aria-label={s.label}
+            style={{ color: 'rgba(255,255,255,0.22)' }}
+            whileHover={{ color: '#22d3ee', y: -3, scale: 1.15 }}
+            transition={{ duration: 0.2 }}
+          >
+            {s.icon === 'github'   && <GithubIcon size={18} />}
+            {s.icon === 'linkedin' && <LinkedinIcon size={18} />}
+          </motion.a>
         ))}
-        <span className="hero__side-line" aria-hidden="true" />
+        <div style={{
+          width: 1, height: 56,
+          background: 'linear-gradient(to bottom, rgba(138,43,226,0.55), transparent)',
+        }} />
       </aside>
 
-      {/* Fixed side email */}
-      <aside className="hero__email-side" aria-label="Email address">
-        <a
+      <aside
+        aria-label="Email address"
+        className="hidden lg:flex"
+        style={{
+          position: 'fixed', right: '1.5rem', bottom: '3rem',
+          zIndex: 50, flexDirection: 'column', alignItems: 'center', gap: '0.85rem',
+        }}
+      >
+        <motion.a
           href={`mailto:${contact.email}`}
-          className="hero__email-link"
+          style={{
+            fontFamily: 'var(--font-code)',
+            fontSize: '0.64rem', letterSpacing: '0.12em',
+            color: 'rgba(255,255,255,0.22)', writingMode: 'vertical-rl',
+          }}
+          whileHover={{ color: '#22d3ee' }}
+          transition={{ duration: 0.2 }}
         >
           {contact.email}
-        </a>
-        <span className="hero__side-line" aria-hidden="true" />
+        </motion.a>
+        <div style={{
+          width: 1, height: 56,
+          background: 'linear-gradient(to bottom, rgba(138,43,226,0.55), transparent)',
+        }} />
       </aside>
     </>
   );
