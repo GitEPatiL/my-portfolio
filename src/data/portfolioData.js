@@ -14,7 +14,7 @@ export const siteConfig = {
   location:     "Pune, Maharashtra, India",
   email:        "giteaviraj155@gmail.com",
   phone:        "+91 7038071626",
-  resumeUrl:    "https://drive.google.com/file/d/1vaT8geEv2iHELza-2y_IwJnn97tYdHem/view?usp=drive_link",
+  resumeUrl:    "https://drive.google.com/file/d/1NxEJIZ_rW4vv4nXQILVUoOlVXfE_6hHj/view?usp=drive_link",
   portfolioUrl: "https://my-portfolio-pi-six-56.vercel.app",
   githubUrl:    "https://github.com/GitEPatiL",
   linkedinUrl:  "https://www.linkedin.com/in/aviraj-gite-8737892b4",
