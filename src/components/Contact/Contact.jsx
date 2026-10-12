@@ -1,20 +1,20 @@
 // src/components/Contact/Contact.jsx
 import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useReducedMotion, AnimatePresence } from 'framer-motion';
-import emailjs from '@emailjs/browser';
 import { contact, siteConfig } from '../../data/portfolioData';
 import { fadeUp, staggerContainer, VIEWPORT, smoothSpring, floating } from '../../animations';
 import MagneticButton from '../ui/MagneticButton';
-import { MailIcon, PhoneIcon, GithubIcon, LinkedinIcon, ArrowRightIcon } from '../ui/Icons';
+import { MailIcon, PhoneIcon, GithubIcon, LinkedinIcon, ArrowRightIcon, WhatsAppIcon } from '../ui/Icons';
 
 function buildCards(siteConfig, contact) {
   const github   = contact.socials.find(s => s.icon === 'github');
   const linkedin = contact.socials.find(s => s.icon === 'linkedin');
   return [
-    { id: 'email',    label: 'Email',    value: siteConfig.email,         href: `mailto:${siteConfig.email}`, icon: <MailIcon size={18} /> },
-    { id: 'phone',    label: 'Phone',    value: siteConfig.phone,         href: `tel:${siteConfig.phone}`,    icon: <PhoneIcon size={18} /> },
-    { id: 'github',   label: 'GitHub',   value: 'github.com/GitEPatiL',   href: github?.href || '#',          icon: <GithubIcon size={18} />,   external: true },
-    { id: 'linkedin', label: 'LinkedIn', value: 'aviraj-gite',            href: linkedin?.href || '#',        icon: <LinkedinIcon size={18} />, external: true },
+    { id: 'whatsapp', label: 'WhatsApp', value: '+91 7038071626 (Direct Chat)',        href: 'https://wa.me/917038071626',                                        icon: <WhatsAppIcon size={18} />, external: true },
+    { id: 'email',    label: 'Email',    value: siteConfig.email,                       href: `mailto:${siteConfig.email}`,                                        icon: <MailIcon size={18} /> },
+    { id: 'phone',    label: 'Phone',    value: siteConfig.phone,                       href: `tel:${siteConfig.phone}`,                                           icon: <PhoneIcon size={18} /> },
+    { id: 'github',   label: 'GitHub',   value: 'github.com/GitEPatiL',                 href: github?.href || 'https://github.com/GitEPatiL',                     icon: <GithubIcon size={18} />,   external: true },
+    { id: 'linkedin', label: 'LinkedIn', value: 'aviraj-gite-8737892b4',                href: linkedin?.href || 'https://www.linkedin.com/in/aviraj-gite-8737892b4', icon: <LinkedinIcon size={18} />, external: true },
   ];
 }
 
@@ -73,7 +73,7 @@ export default function Contact() {
     setErrors(validate(form));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setTouched({ name: true, email: true, message: true });
     const errs = validate(form);
@@ -82,28 +82,26 @@ export default function Contact() {
     
     setIsSubmitting(true);
     
-    try {
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        {
-          from_name: form.name,
-          from_email: form.email,
-          message: form.message,
-          to_name: siteConfig.name,
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
-      
-      showToast('Message sent successfully!', 'success');
+    const whatsappNumber = "917038071626";
+    const text = `*New Portfolio Contact Form Submission*
+
+*Name:* ${form.name.trim()}
+*Email:* ${form.email.trim()}
+
+*Message:*
+${form.message.trim()}`;
+
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+
+    showToast('Opening WhatsApp with your message...', 'success');
+
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+    setTimeout(() => {
       setForm(INIT);
       setTouched({});
-    } catch (error) {
-      console.error("EmailJS Error:", error);
-      showToast('Failed to send message. Please try again.', 'error');
-    } finally {
       setIsSubmitting(false);
-    }
+    }, 1200);
   };
 
   const hasErrors = Object.values(errors).some(Boolean);
@@ -332,15 +330,24 @@ export default function Contact() {
                 className="btn-primary"
                 id="contact-submit-btn"
                 disabled={isSubmitting || (Object.keys(touched).length > 0 && hasErrors)}
-                style={{ width: '100%', justifyContent: 'center', opacity: (isSubmitting || (Object.keys(touched).length > 0 && hasErrors)) ? 0.5 : 1 }}
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  opacity: (isSubmitting || (Object.keys(touched).length > 0 && hasErrors)) ? 0.5 : 1
+                }}
               >
-                {isSubmitting ? 'Sending...' : 'Send Message →'}
+                <WhatsAppIcon size={18} />
+                {isSubmitting ? 'Opening WhatsApp...' : 'Send on WhatsApp →'}
               </MagneticButton>
 
               <p style={{ textAlign: 'center', fontFamily: 'var(--font-code)', fontSize: '0.72rem', color: 'var(--text-faint)' }}>
-                Or email directly:{' '}
+                Message will be sent to Aviraj on WhatsApp (<span style={{ color: 'var(--purple-light)' }}>+91 7038071626</span>)
+                {' • '}
                 <a href={`mailto:${siteConfig.email}`} style={{ color: 'var(--purple-light)' }}>
-                  {siteConfig.email}
+                  Email directly
                 </a>
               </p>
             </form>

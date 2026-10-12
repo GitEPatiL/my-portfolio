@@ -164,10 +164,15 @@ export default function About() {
               <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '0.25rem' }}>
                 {edu.institution}
               </p>
-              <p style={{ color: 'var(--text-faint)', fontSize: '0.82rem', marginBottom: '1rem' }}>
+              <p style={{ color: 'var(--text-faint)', fontSize: '0.82rem', marginBottom: '0.75rem' }}>
                 {edu.university}
               </p>
-              <span className="chip">🎓 Graduated in {edu.year}</span>
+              {edu.description && (
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '1rem' }}>
+                  {edu.description}
+                </p>
+              )}
+              <span className="chip">🎓 {edu.year} • {edu.cgpa}</span>
             </motion.div>
 
             {/* Contact info card */}

@@ -253,22 +253,22 @@ export default function Hero() {
                 marginTop: '1.5rem',
               }}
             >
-              Full Stack MERN Developer<Cursor />
+              MERN Stack Developer & Full Stack Engineer<Cursor />
             </motion.p>
 
             <motion.p
               variants={ITEM}
               style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: 'clamp(1rem, 1.6vw, 1.35rem)',
+                fontSize: 'clamp(0.95rem, 1.4vw, 1.2rem)',
                 fontWeight: 500,
                 color: '#22d3ee',
                 lineHeight: 1.55,
                 marginTop: '1.25rem',
-                maxWidth: 540,
+                maxWidth: 560,
               }}
             >
-              I build scalable, immersive, and visually stunning digital products.
+              1.5 Years Experience @ A2Z IT HUB • Production APIs & Gemini AI Integrations
             </motion.p>
 
             <motion.p
@@ -280,11 +280,11 @@ export default function Hero() {
                 color: '#9ca3af',
                 lineHeight: 1.9,
                 marginTop: '1.1rem',
-                maxWidth: 500,
+                maxWidth: 520,
               }}
             >
-              Passionate about creating modern web applications with React, Node.js,
-              Express.js, MongoDB, and advanced frontend animations.
+              Specializing in building robust full-stack applications with React, Node.js, Express,
+              MongoDB, role-based JWT authentication, and high-performance RESTful APIs.
             </motion.p>
 
             <motion.div
@@ -298,11 +298,15 @@ export default function Hero() {
 
             <motion.div
               variants={ITEM}
-              style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1.75rem' }}
+              style={{ display: 'flex', gap: '0.85rem', flexWrap: 'wrap', marginTop: '1.75rem' }}
             >
               <MagneticButton as="a" href="#projects" className="btn-primary"
                 onClick={scrollTo('#projects')} id="hero-view-projects">
                 View Projects ↓
+              </MagneticButton>
+              <MagneticButton as="a" href={siteConfig.resumeUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost"
+                id="hero-view-resume">
+                Resume ↗
               </MagneticButton>
               <MagneticButton as="a" href="#contact" className="btn-ghost"
                 onClick={scrollTo('#contact')} id="hero-contact-me">

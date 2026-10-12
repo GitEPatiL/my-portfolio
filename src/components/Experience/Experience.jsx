@@ -122,18 +122,32 @@ export default function Experience() {
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
                   <div>
-                    <h3 style={{
-                      fontFamily: 'var(--font-body)',
-                      fontWeight: 700, fontSize: '1.1rem',
-                      color: 'var(--text)', marginBottom: '0.25rem',
-                    }}>
-                      {exp.role}
-                    </h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+                      <h3 style={{
+                        fontFamily: 'var(--font-body)',
+                        fontWeight: 700, fontSize: '1.1rem',
+                        color: 'var(--text)', margin: 0,
+                      }}>
+                        {exp.role}
+                      </h3>
+                      {exp.type && (
+                        <span style={{
+                          fontFamily: 'var(--font-code)',
+                          fontSize: '0.65rem', letterSpacing: '0.06em',
+                          padding: '0.15rem 0.55rem', borderRadius: '999px',
+                          background: 'rgba(138,43,226,0.15)',
+                          border: '1px solid rgba(138,43,226,0.35)',
+                          color: 'var(--purple-light)',
+                        }}>
+                          {exp.type}
+                        </span>
+                      )}
+                    </div>
                     <p style={{
                       fontFamily: 'var(--font-code)',
                       fontSize: '0.8rem', color: 'var(--purple-light)',
                     }}>
-                      @ {exp.company}
+                      @ {exp.company} {exp.location && <span style={{ color: 'var(--text-faint)', fontSize: '0.75rem', marginLeft: '0.3rem' }}>• {exp.location}</span>}
                     </p>
                   </div>
                   <time style={{
