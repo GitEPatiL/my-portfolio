@@ -91,7 +91,7 @@ export default function Navbar() {
 
           {/* Desktop nav links */}
           <ul className="hidden md:flex items-center gap-8" role="list">
-            {navLinks.map((link, i) => {
+            {navLinks.map((link) => {
               const isActive = activeLink === link.href;
               return (
                 <li key={link.href}>
@@ -163,7 +163,7 @@ export default function Navbar() {
               }}
             >
               <div className="container py-6 flex flex-col gap-4">
-                {navLinks.map((link, i) => (
+                {navLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}

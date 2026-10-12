@@ -11,7 +11,6 @@ export default {
       colors: {
         // Stitch Cyber-Minimalist palette
         surface: {
-          DEFAULT: '#11131c',
           dim: '#11131c',
           bright: '#373943',
           lowest: '#0c0e17',

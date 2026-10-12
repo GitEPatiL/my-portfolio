@@ -1,6 +1,7 @@
 // src/components/Contact/Contact.jsx
 import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useReducedMotion, AnimatePresence } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 import { contact, siteConfig } from '../../data/portfolioData';
 import { fadeUp, staggerContainer, VIEWPORT, smoothSpring, floating } from '../../animations';
 import MagneticButton from '../ui/MagneticButton';
@@ -73,35 +74,47 @@ export default function Contact() {
     setErrors(validate(form));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setTouched({ name: true, email: true, message: true });
     const errs = validate(form);
     setErrors(errs);
     if (Object.values(errs).some(Boolean)) return;
-    
+    if (isSubmitting) return;
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      showToast('Unable to send your message right now. Please try again or email me directly.', 'error');
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    const whatsappNumber = "917038071626";
-    const text = `*New Portfolio Contact Form Submission*
 
-*Name:* ${form.name.trim()}
-*Email:* ${form.email.trim()}
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: form.name.trim(),
+          reply_to: form.email.trim(),
+          message: form.message.trim(),
+          to_name: 'Aviraj Gite',
+        },
+        publicKey
+      );
 
-*Message:*
-${form.message.trim()}`;
-
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
-
-    showToast('Opening WhatsApp with your message...', 'success');
-
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-
-    setTimeout(() => {
+      showToast("Message sent successfully! I'll get back to you soon.", 'success');
       setForm(INIT);
       setTouched({});
+    } catch (error) {
+      console.error('EmailJS Submission Error:', error?.text || error?.message || 'Failed to send message');
+      showToast('Unable to send your message right now. Please try again or email me directly.', 'error');
+    } finally {
       setIsSubmitting(false);
-    }, 1200);
+    }
   };
 
   const hasErrors = Object.values(errors).some(Boolean);
@@ -282,7 +295,7 @@ ${form.message.trim()}`;
                   <input
                     id="cf-name" name="name" type="text"
                     className={`cf-input ${touched.name && errors.name ? 'invalid' : ''}`}
-                    placeholder="Aviraj Gite"
+                    placeholder="Enter Your Name ...."
                     value={form.name} onChange={handleChange} onBlur={handleBlur}
                     autoComplete="name"
                   />
@@ -339,15 +352,14 @@ ${form.message.trim()}`;
                   opacity: (isSubmitting || (Object.keys(touched).length > 0 && hasErrors)) ? 0.5 : 1
                 }}
               >
-                <WhatsAppIcon size={18} />
-                {isSubmitting ? 'Opening WhatsApp...' : 'Send on WhatsApp →'}
+                <MailIcon size={18} />
+                {isSubmitting ? 'Sending Message...' : 'Send Message →'}
               </MagneticButton>
 
               <p style={{ textAlign: 'center', fontFamily: 'var(--font-code)', fontSize: '0.72rem', color: 'var(--text-faint)' }}>
-                Message will be sent to Aviraj on WhatsApp (<span style={{ color: 'var(--purple-light)' }}>+91 7038071626</span>)
-                {' • '}
+                Your message will be sent directly to my inbox.{' '}
                 <a href={`mailto:${siteConfig.email}`} style={{ color: 'var(--purple-light)' }}>
-                  Email directly
+                  Or email directly
                 </a>
               </p>
             </form>
