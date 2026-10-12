@@ -82,11 +82,16 @@ export default function Contact() {
     if (Object.values(errs).some(Boolean)) return;
     if (isSubmitting) return;
 
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim();
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim();
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim();
 
     if (!serviceId || !templateId || !publicKey) {
+      console.error('EmailJS Missing Env Variables:', {
+        VITE_EMAILJS_SERVICE_ID: Boolean(serviceId),
+        VITE_EMAILJS_TEMPLATE_ID: Boolean(templateId),
+        VITE_EMAILJS_PUBLIC_KEY: Boolean(publicKey),
+      });
       showToast('Unable to send your message right now. Please try again or email me directly.', 'error');
       return;
     }
@@ -110,7 +115,7 @@ export default function Contact() {
       setForm(INIT);
       setTouched({});
     } catch (error) {
-      console.error('EmailJS Submission Error:', error?.text || error?.message || 'Failed to send message');
+      console.error('EmailJS Submission Error:', error);
       showToast('Unable to send your message right now. Please try again or email me directly.', 'error');
     } finally {
       setIsSubmitting(false);
